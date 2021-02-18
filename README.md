@@ -13,7 +13,7 @@ cp default.env .env
 ### Start Services
 
 ```
-sudo docker-compose up --detach
+docker-compose up --detach
 ```
 
 ### Reset database
@@ -21,10 +21,10 @@ sudo docker-compose up --detach
 For clean slate, stop the service and remove the volume, then restart: 
 
 ```
-sudo docker-compose down
+docker-compose down
 docker volume ls
 docker volume rm <volume_name>
-sudo docker-compose up --detach
+docker-compose up --detach
 ```
 
 ### Import database

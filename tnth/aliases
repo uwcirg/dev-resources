@@ -1,1 +1,2 @@
 dc='sudo docker-compose'
+docker='sudo docker'
