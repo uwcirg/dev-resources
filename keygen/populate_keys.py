@@ -8,17 +8,29 @@ usage = """Echos all lines from input file to stdout or output file,
 appending unique generated secrets when expected patterns are found"""
 
 
-def match(line):
+def match(line, ignore_existing):
     """Returns true if line matches configured patterns"""
-    m = re.search("^__KEYCLOAK_.*_SECRET=", line)
-    return m
+    m = re.search("^(__KEYCLOAK_.*_SECRET=)(.*)", line)
+    if not m:
+        return False
+
+    key, value = m.groups()
+    if not ignore_existing:
+        # when retaining existing values, don't consider a match if
+        # existing value exists
+        if value:
+            return False
+
+    # return only the first group for overwrite, extension
+    return m and m.groups()[0]
 
 
-def single_line(line):
+def single_line(line, replace):
     """Given single line of input, return possibly improved output"""
-    if not match(line):
+    m = match(line, ignore_existing=replace)
+    if not m:
         return line
-    return improve(line)
+    return improve(m)
 
 
 def improve(line):
@@ -29,7 +41,8 @@ def improve(line):
 @click.command(help=usage)
 @click.argument('input')
 @click.option('-o', '--output', help="writable file, stdout by default")
-def generate_secrets(input, output):
+@click.option('-r', '--replace', default=False, help="replace existing values")
+def generate_secrets(input, output, replace):
     if not output:
         ofile = sys.stdout
     else:
@@ -37,10 +50,7 @@ def generate_secrets(input, output):
 
     with open(input, 'r') as ifile:
         for line in ifile:
-            if not match(line):
-                ofile.write(line)
-            else:
-                ofile.write(improve(line))
+            ofile.write(single_line(line, replace))
 
 
 if __name__ == '__main__':

@@ -2,6 +2,35 @@
 
 Intended to house utilities, shortcuts and tools likely to span projects.
 
+## keygen
+
+### Create a virtual environment for creating keys for config files (must be done once)
+
+```
+python3 -m venv venv
+```
+### Activate said environment (must be done on new shell or session)
+```
+source venv/bin/activate
+```
+
+### Install dependencies (must be done anytime requirements change)
+```
+pip install -r requirements.txt
+```
+
+### Run to generate the necessary keycloak keys from default file
+```
+keygen/populate_keys.py <path_to_default_config> --ouput <path_to_desired_config>
+```
+
+### Testing
+```
+pip install -r requirements.dev.txt
+py.test keygen/tests.py
+```
+
+
 ## tnth
 
 ### Copy the template files and edit as necessary.
