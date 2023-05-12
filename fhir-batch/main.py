@@ -1,7 +1,30 @@
 """Editable one off script to batch a series of FHIR requests"""
+import json
 import requests
 
-SERVER = "https://fhir.isacc.eval.cirg.uw.edu"
+SERVER = "https://fhir.isacc.dev.cirg.uw.edu"
+
+
+def get_patient(id):
+    patients_query = '/'.join((SERVER, "fhir", "Patient", str(id)))
+    params = {}
+    response = requests.get(patients_query, params=params)
+    response.raise_for_status()
+    patient = response.json()
+    assert patient['resourceType'] == 'Patient'
+    return patient
+
+
+def put_patient(patient):
+    id = patient["id"]
+    assert id
+    patients_query = '/'.join((SERVER, "fhir", "Patient", str(id)))
+    params = {}
+    response = requests.put(patients_query, params=params, json=patient)
+    response.raise_for_status()
+    patient = response.json()
+    assert patient['resourceType'] == 'Patient'
+    return patient
 
 
 def get_patients():
@@ -41,5 +64,16 @@ def add_patient_extension(url, patient_generator):
         response.raise_for_status()
 
 
+def update_patient(patient_id):
+    patient = get_patient(patient_id)
+    patient["telecom"][0] = {"system": "sms", "value": "2069314378"}
+    after = put_patient(patient)
+    if after == patient:
+        print("no change detected!")
+
+    print(json.dumps(patient))
+
+
 if __name__ == "__main__":
-    add_patient_extension(url=SERVER, patient_generator=get_patients)
+    #add_patient_extension(url=SERVER, patient_generator=get_patients)
+    update_patient(patient_id=491)
