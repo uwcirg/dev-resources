@@ -48,25 +48,3 @@ def transform(cursor, custom_dir):
     with open(os.path.join(custom_dir, "config.yaml"), 'r') as yamldata:
         for client in yaml.safe_load(yamldata)['clients']:
             insert_client(cursor, client)
-
-
-def unused(cursor, ae):
-    # plug in dev version of assessment engine for functional interaction
-    # already in place, implies this is the second run of the transformation
-    # ignore for easier use in development
-    cursor.execute("SELECT count(*) FROM clients WHERE client_id='%s'" % ae['client_id'])
-    if cursor.fetchone()[0] == 1:
-        return
-
-    print(f"Replacing assessment engine client details as named in `config.yaml`")
-    values = (
-        ae['client_id'], ae['client_secret'], ae['user_id'], ae['_redirect_uris'],
-        ae['_default_scopes'], ae['callback_url'])
-    insert_clause = (
-        "INSERT INTO clients (client_id, client_secret, user_id, _redirect_uris, "
-        "_default_scopes, callback_url) VALUES ('%s', '%s', %s, '%s', '%s', '%s')")
-
-    cursor.execute(insert_clause % values)
-    cursor.execute(
-        "UPDATE interventions SET client_id = '%s' WHERE name = 'assessment engine'" %
-        ae['client_id'])
