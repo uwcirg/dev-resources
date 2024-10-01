@@ -1,3 +1,4 @@
+# example config; copy and add client/intervention details as needed
 clients:
   - name: ae
     # the original dev `ae` client details, to be restored for functional integration
