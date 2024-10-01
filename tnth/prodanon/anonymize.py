@@ -5,7 +5,8 @@ from prodanon.conn import Conn
 def test_connection(cursor):
     cursor.execute("SELECT version();")
     version = cursor.fetchone()
-    assert version[0].startswith('PostgreSQL ')
+    if not version[0].startswith('PostgreSQL '):
+        raise RuntimeError("Unable to connect to PostgreSQL; Can't continue")
 
 
 package = "prodanon"
