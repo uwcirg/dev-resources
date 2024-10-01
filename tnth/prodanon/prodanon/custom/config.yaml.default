@@ -1,0 +1,34 @@
+# example config; copy and add client/intervention details as needed
+clients:
+  - name: ae
+    # the original dev `ae` client details, to be restored for functional integration
+    client_id: 
+    client_secret: 
+    user_id: 
+    _redirect_uris: https://ae-eproms-test.cirg.washington.edu
+    _default_scopes: email
+    callback_url: https://ae-eproms-test.cirg.washington.edu/auth/truenth/eventcallback
+    intervention_name: 'assessment engine'
+
+  - name: mskcc
+    # the original dev metadata rave uat client, needed for long life token
+    client_id: 
+    client_secret: 
+    user_id:
+    _redirect_uris: https://mskcc.mdsol.com
+    _default_scopes: email
+    callback_url: null
+    intervention_name: null
+
+users:
+  preserve_ids: []
+
+tokens:
+  - name: mskcc
+    client_id:
+    user_id:
+    token_type: Bearer
+    access_token:
+    expires:
+    _scopes: email
+
