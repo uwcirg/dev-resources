@@ -3,7 +3,7 @@ import os
 class Config(object):
     db_host = os.environ.get("POSTGRES_HOST", '127.0.0.1')
     db_port = os.environ.get("POSTGRES_PORT", '5432')
-    db_name = os.environ.get("POSTGRES_DB")
+    db_name = os.environ.get("POSTGRES_DB", "portaldb")
     db_user = os.environ.get("POSTGRES_USER", 'postgres')
     db_password = os.environ.get("POSTGRES_PASSWORD")
 
