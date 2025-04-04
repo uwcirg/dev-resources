@@ -1,0 +1,25 @@
+clients:
+  # list any clients necessary to preserve with following structure
+  - name:
+      client_id:
+      client_secret:
+      user_id:
+      _redirect_uris:
+      _default_scopes:
+      callback_url:
+      intervention_name
+
+users:
+  # list PK ids of users to preserve, such as test accounts
+  preserve_ids: []
+
+tokens:
+  # tokens to preserve, associated with client interventions
+  - name:
+    client_id:
+    user_id:
+    token_type: Bearer
+    access_token:
+    expires:
+    _scopes:
+
