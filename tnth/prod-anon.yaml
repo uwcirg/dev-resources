@@ -1,19 +1,20 @@
 services:
-  postgres:
+  db_target:
+    # separate postgres db to silo anon work from production
     image: postgres:${POSTGRES_VERSION:-16}
     environment:
-      # use generic postgres env vars to configure env vars specific to dockerized postgres
-      POSTGRES_DB: ${PGDATABASE:-portaldb}
-      POSTGRES_PASSWORD: ${PGPASSWORD:-wplatrop}
+      POSTGRES_DB: ${PGDATABASE:-anonportaldb}
+      POSTGRES_PASSWORD: ${PGPASSWORD:-targetdbpass}
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d portaldb"]
+      test: ["CMD-SHELL", "pg_isready -U postgres -d anonportaldb"]
       interval: 5s
       retries: 3
       start_period: 10s
       timeout: 5s
     volumes:
       - postgres-data:/var/lib/postgresql/data
-      - "./custom/db:/docker-entrypoint-initdb.d"
+      - /backups/truenth/:/tmp/
+        #- "./prodanon/custom/db:/docker-entrypoint-initdb.d"
     ports:
       # only listen on localhost
       - "127.0.0.1:5432:5432"
@@ -22,12 +23,14 @@ services:
     build: ./prodanon
     environment:
       # use generic postgres env vars to configure env vars specific to dockerized postgres
-      POSTGRES_HOST: postgres
-      POSTGRES_DB: ${PGDATABASE:-portaldb}
-      POSTGRES_PASSWORD: ${PGPASSWORD:-wplatrop}
+      POSTGRES_HOST: db_target
+      POSTGRES_DB: ${PGDATABASE:-anonportaldb}
+      POSTGRES_PASSWORD: ${PGPASSWORD:-targetdbpass}
     depends_on:
-      postgres:
+      db_target:
         condition: service_healthy
+    volumes:
+      - ./prodanon/custom/:/src/prodanon/custom/
 
 volumes:
     postgres-data: {}
