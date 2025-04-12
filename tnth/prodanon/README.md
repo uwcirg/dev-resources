@@ -6,7 +6,7 @@ without the PHI.
 ## Export from Prod
 
 Tools such as [backup-docker.sh](https://github.com/uwcirg/truenth-portal/blob/develop/bin/backup-docker.sh)
-make exporting easy.  Note the directory used.  Assuming `/backups/truenth` 
+make exporting easy.  Note the directory used.  Assuming `/backups/truenth-portal` 
 for subsequent steps.
 
 ## Prepare Temporary Database for Transformation 
@@ -18,7 +18,7 @@ git clone git@github.com:uwcirg/dev-resources.git
 cd dev-resources/tnth
 
 # Edit the config to name users, clients and tokens to preserve
-cp custom/config.yaml.default custom/config.yaml
+cp prodanon/prodanon/custom/config.yaml{.default,}
 
 # NB the need to name which project yaml file to use, given multiple in this namespace
 
@@ -40,9 +40,14 @@ sudo /srv/www/eproms.truenth.org/truenth-portal/bin/backup-docker.sh -b /backups
 Import the most recent dump file from the backup directory:
 
 ```bash
-SOURCE=$(ls -t /backups/truenth | head -n 1)
-docker compose -f prod-anon.yaml exec db_target \
-  psql --username postgres anonportaldb -f /tmp/${SOURCE}
+SOURCE=$(ls -t /backups/truenth-portal | head -n 1)
+docker compose -f prod-anon.yaml exec db_target bash -c "\
+ if [[ ${SOURCE} == *.gz ]]; then \
+   gunzip -c /tmp/backups/${SOURCE} | \
+   psql --username postgres anonportaldb; \
+ else \
+   psql --username postgres anonportaldb -f /tmp/backups/${SOURCE}; \
+  fi"
 ```
 
 ## Run the `prodanon` Transformation
