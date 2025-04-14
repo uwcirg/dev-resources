@@ -54,7 +54,7 @@ docker compose -f prod-anon.yaml exec db_target bash -c "\
 
 Bring the service up in the foreground to wait (several minutes) for its conclusion.
 ```bash
-docker compose -f prod-anon.yaml up
+docker compose -f prod-anon.yaml up prodanon
 ```
 
 ## Export the Transformed Database
