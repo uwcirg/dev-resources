@@ -27,6 +27,7 @@ def transform(cursor, custom_dir):
     with open(os.path.join(custom_dir, "config.yaml"), 'r') as yamlfile:
         skip_ids = yaml.safe_load(yamlfile)['users']['preserve_ids']
     updates = []
+    id_map = {}
     for id, em in cursor:
         if id in skip_ids:
             continue
@@ -34,6 +35,7 @@ def transform(cursor, custom_dir):
         lname = f"{id}_ln"
         birthdate = "1950-01-01"
         email = email_for_user(id, em)
+        id_map[id] = {"id": id, "fname": fname, "lname": lname, "email": email}
 
         updates.append(
             "UPDATE users SET"
@@ -47,3 +49,18 @@ def transform(cursor, custom_dir):
     print(f"Updating {len(updates)} user rows")
     for i in updates:
         cursor.execute(i)
+
+    # use same values in cache patient_list table
+    transform_patient_list(cursor, id_map)
+
+
+def transform_patient_list(cursor, id_map):
+    num_updated = 0
+    stmt = (
+        "UPDATE patient_list SET firstname = '{fname}',"
+        "lastname = '{lname}', email = '{email}' WHERE id = {id};")
+    for id in id_map.keys():
+        stmt.format(**id_map[id])
+        cursor.execute(stmt)
+        num_updated += cursor.rowcount
+    print(f"Updating {num_updated} patient_list rows")
