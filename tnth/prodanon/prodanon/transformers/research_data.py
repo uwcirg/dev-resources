@@ -4,4 +4,4 @@ def transform(cursor, custom_dir):
         "UPDATE research_data SET data = jsonb_set("
         "  data, '{encounter,patient,display}', '\"redacted\"')"
     )
-    print("Updating {cursor.rowcount} research_data rows")
+    print(f"Updating {cursor.rowcount} research_data rows")

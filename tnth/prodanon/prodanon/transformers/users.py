@@ -58,9 +58,11 @@ def transform_patient_list(cursor, id_map):
     num_updated = 0
     stmt = (
         "UPDATE patient_list SET firstname = '{fname}',"
-        "lastname = '{lname}', email = '{email}' WHERE id = {id};")
+        "lastname = '{lname}', email = '{email}' WHERE userid = {id};")
     for id in id_map.keys():
-        stmt.format(**id_map[id])
-        cursor.execute(stmt)
+        cursor.execute(stmt.format(**id_map[id]))
         num_updated += cursor.rowcount
     print(f"Updating {num_updated} patient_list rows")
+
+    # clear out all clinician values
+    cursor.execute("UPDATE patient_list SET clinician = '';")
