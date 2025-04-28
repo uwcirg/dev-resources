@@ -2,6 +2,11 @@
 
 Intended to house utilities, shortcuts and tools likely to span projects.
 
+## prod-anon
+
+See nested [README](tnth/prodanon/README.md) for the process to convert
+production data into anonymous PHI safe test data.
+
 ## keygen
 
 ### Create a virtual environment for creating keys for config files (must be done once)

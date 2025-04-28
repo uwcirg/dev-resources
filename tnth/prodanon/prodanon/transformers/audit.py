@@ -30,6 +30,8 @@ def transform(cursor, custom_dir):
         if context == 'account':
             if comment.startswith('registered invited user'):
                 updates.append((id, "registered invited user <redacted>"))
+            if comment.startswith('local user registered'):
+                updates.append((id, "local user registered <redacted>"))
         if context == 'authentication':
             if comment.startswith('Failed identity challenge'):
                 updates.append((id, "Failed identity challenge <redacted>"))

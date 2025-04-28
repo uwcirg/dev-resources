@@ -31,7 +31,7 @@ def insert_client(cursor, client):
     if client['intervention_name']:
         cursor.execute(
             "UPDATE interventions SET client_id = '%s' WHERE name = '%s'" %
-            client['client_id'], client['intervention_name'])
+            (client['client_id'], client['intervention_name']))
 
 
 def transform(cursor, custom_dir):

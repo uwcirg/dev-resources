@@ -17,7 +17,7 @@ if __name__ == '__main__':
     print("Begin Anonymize Data")
 
     transformers = [
-        f[:-3] for f in os.listdir(transformers_dir) if f.endswith(".py") and f != "__init__.py"]
+        f[:-3] for f in sorted(os.listdir(transformers_dir)) if f.endswith(".py") and f != "__init__.py"]
     with Conn() as cursor:
         test_connection(cursor)
 
